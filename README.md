@@ -10,7 +10,7 @@ A small script to generate snipmate.vim and UltiSnips Ansible snippets.
 ## Run
 
 ```
-./ansible_snippet_generator.py --ultisnips ~/ansible/lib/ansible/modules > ~/.vim/snippets/UltiSnips/yaml.snippets
+./snippet_generator.py --ultisnips ~/ansible/lib/ansible/modules > ~/.vim/snippets/UltiSnips/yaml.snippets
 ```
 
 ## Credits
