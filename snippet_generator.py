@@ -28,25 +28,30 @@ def generate(path, args):
         print ("%s- name: ${1:task_description}" % prefix)
         print ("%s  %s: " % (prefix, doc['module']))
 
-        options = {}
+        count = 1
         if 'options' in doc:
             for opt in doc['options']:
-                optional = not doc['options'][opt].get('required', False)
-                if 'default' in doc['options'][opt]:
-                    if doc['options'][opt]['default'] is None:
-                        default = ''
-                    else:
-                        default = doc['options'][opt]['default']
-                    options[opt] = [optional, default]
-
-            count = 1
-            for k, v in sorted(options.items(), key=lambda (k, v): v):
                 count += 1
-                if not v[0]:
-                    print ("%s    %s: ${%d:%s}" % (prefix, k, count, v[1]))
-                else:
-                    print ("%s    %s%s: ${%d:%s}" %
-                           (prefix, '#', k, count, v[1]))
+                if 'required' in doc['options'][opt] and \
+                        doc['options'][opt]['required']:
+                    if 'default' in doc['options'][opt]:
+                        value = "${%d:%s}" % (count,
+                                              doc['options'][opt]['default'])
+                    else:
+                        value = "${%d}" % (count)
+                    print ("%s    %s: %s" % (prefix, opt, value))
+
+            for opt in doc['options']:
+                if 'required' not in doc['options'][opt] or \
+                        doc['options'][opt]['required'] is False:
+                    count += 1
+                    if 'default' in doc['options'][opt] and \
+                            doc['options'][opt]['default']:
+                        value = "${%d:%s}" % (count,
+                                              doc['options'][opt]['default'])
+                    else:
+                        value = "${%d}" % (count)
+                    print ("%s    #%s: %s" % (prefix, opt, value))
             if args.ultisnips:
                 print ('endsnippet')
             print ('')
@@ -61,6 +66,11 @@ def main():
     parser.add_argument('modpath', type=str, nargs=1,
                         help="Path to Ansible's modules")
     args = parser.parse_args()
+
+    if args.ultisnips:
+        print (ultisnips_play)
+    else:
+        print (snipmate_play)
 
     for root, _, files in os.walk(args.modpath[0]):
         for name in files:
