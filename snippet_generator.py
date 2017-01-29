@@ -3,7 +3,6 @@
 import argparse
 from ansible.utils.module_docs import get_docstring
 import os
-import sys
 
 ultisnips_play = '''
 snippet play
@@ -20,6 +19,7 @@ snippet play
   tasks:
 '''
 
+
 def generate(path, args):
     doc, examples, _ = get_docstring(path)
     prefix = args.snipmate and '\t' or ''
@@ -28,20 +28,27 @@ def generate(path, args):
         print "%s- name: ${1:task_description}" % prefix
         print "%s  %s: " % (prefix, doc['module'])
 
-        count = 1
+        options = {}
         if 'options' in doc:
             for opt in doc['options']:
-                count += 1
                 optional = not doc['options'][opt].get('required', False)
                 if 'default' in  doc['options'][opt]:
-                    value = "${%d:%s}" % (count, doc['options'][opt]['default'])
+                    if doc['options'][opt]['default'] == None:
+                        default = ''
+                    else:
+                        default = doc['options'][opt]['default']
+                    options[opt] = [optional, default]
+
+            count = 1
+            for k, v in sorted(options.items(), key=lambda (k,v): v):
+                count += 1
+                if not v[0]:
+                    print "%s    %s: ${%d:%s}" % (prefix, k, count, v[1])
                 else:
-                    value = "${%d}" % (count)
-                print "%s    %s%s: %s" % (prefix, optional and '#' or '', opt, value)
+                    print "%s    %s%s: ${%d:%s}" % (prefix, '#', k, count, v[1])
             if args.ultisnips:
                 print 'endsnippet'
             print
-
 
 def main():
     parser = argparse.ArgumentParser(prog='snippet_generator.py')
