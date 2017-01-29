@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
-import argparse
 from ansible.utils.module_docs import get_docstring
+import argparse
 import os
 
 ultisnips_play = '''
@@ -23,41 +23,43 @@ snippet play
 def generate(path, args):
     doc, examples, _ = get_docstring(path)
     prefix = args.snipmate and '\t' or ''
-    if doc != None:
-        print "snippet %s" % doc['module']
-        print "%s- name: ${1:task_description}" % prefix
-        print "%s  %s: " % (prefix, doc['module'])
+    if doc is not None:
+        print ("snippet %s" % doc['module'])
+        print ("%s- name: ${1:task_description}" % prefix)
+        print ("%s  %s: " % (prefix, doc['module']))
 
         options = {}
         if 'options' in doc:
             for opt in doc['options']:
                 optional = not doc['options'][opt].get('required', False)
-                if 'default' in  doc['options'][opt]:
-                    if doc['options'][opt]['default'] == None:
+                if 'default' in doc['options'][opt]:
+                    if doc['options'][opt]['default'] is None:
                         default = ''
                     else:
                         default = doc['options'][opt]['default']
                     options[opt] = [optional, default]
 
             count = 1
-            for k, v in sorted(options.items(), key=lambda (k,v): v):
+            for k, v in sorted(options.items(), key=lambda (k, v): v):
                 count += 1
                 if not v[0]:
-                    print "%s    %s: ${%d:%s}" % (prefix, k, count, v[1])
+                    print ("%s    %s: ${%d:%s}" % (prefix, k, count, v[1]))
                 else:
-                    print "%s    %s%s: ${%d:%s}" % (prefix, '#', k, count, v[1])
+                    print ("%s    %s%s: ${%d:%s}" %
+                           (prefix, '#', k, count, v[1]))
             if args.ultisnips:
-                print 'endsnippet'
-            print
+                print ('endsnippet')
+            print ('')
+
 
 def main():
     parser = argparse.ArgumentParser(prog='snippet_generator.py')
     parser.add_argument('--ultisnips', action='store_true',
-    	help='Generate snippets for UltiSnips')
+                        help='Generate snippets for UltiSnips')
     parser.add_argument('--snipmate', action='store_true',
-    	help='Generate snippets for snipMate')
+                        help='Generate snippets for snipMate')
     parser.add_argument('modpath', type=str, nargs=1,
-        help="Path to Ansible's modules, i.e.:/<ansible_source>/lib/ansible/modules")
+                        help="Path to Ansible's modules")
     args = parser.parse_args()
 
     for root, _, files in os.walk(args.modpath[0]):
