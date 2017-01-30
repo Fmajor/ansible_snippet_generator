@@ -14,9 +14,9 @@ endsnippet
 
 snipmate_play = '''
 snippet play
-- hosts: ${1:group}
-  user: ${2:root}
-  tasks:
+\t- hosts: ${1:group}
+\t  user: ${2:root}
+\t  tasks:
 '''
 
 
@@ -31,9 +31,9 @@ def generate(path, args):
         count = 1
         if 'options' in doc:
             for opt in doc['options']:
-                count += 1
                 if 'required' in doc['options'][opt] and \
                         doc['options'][opt]['required']:
+                    count += 1
                     if 'default' in doc['options'][opt]:
                         value = "${%d:%s}" % (count,
                                               doc['options'][opt]['default'])
