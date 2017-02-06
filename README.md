@@ -4,8 +4,8 @@ A small script to generate snipmate.vim and UltiSnips Ansible snippets.
 
 ## Requierements
 
-- [Ansible source](/ansible/ansible)
-- [snipmate.vim](/msanders/snipmate.vim) or [ultisnips](/SirVer/ultisnips)
+- [Ansible source](http://github.com/ansible/ansible)
+- [snipmate.vim](http://github.com/msanders/snipmate.vim) or [ultisnips](http://github.com/SirVer/ultisnips)
 
 ## Run
 
@@ -15,4 +15,4 @@ A small script to generate snipmate.vim and UltiSnips Ansible snippets.
 
 ## Credits
 
-Forked from [bleader/ansible_snippet_generator](/bleader/ansible_snippet_generator)
+Forked from [bleader/ansible_snippet_generator](https://github.com/bleader/ansible_snippet_generator)
