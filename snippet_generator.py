@@ -26,7 +26,7 @@ def generate(path, args):
     if doc is not None:
         print ("snippet %s" % doc['module'])
         print ("%s- name: ${1:task_description}" % prefix)
-        print ("%s  %s: " % (prefix, doc['module']))
+        print ("%s  %s:" % (prefix, doc['module']))
 
         count = 1
         if 'options' in doc:
