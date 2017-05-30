@@ -1,8 +1,9 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
-from ansible.utils.module_docs import get_docstring
 import argparse
 import os
+
+from ansible.utils.plugin_docs import get_docstring
 
 ultisnips_play = '''
 snippet play
@@ -20,13 +21,14 @@ snippet play
 '''
 
 
-def generate(path, args):
-    doc, examples, _ = get_docstring(path)
+def generate(path, args, snippets):
+    doc, examples, _, _ = get_docstring(path)
     prefix = args.snipmate and '\t' or ''
+    l = []
     if doc is not None:
-        print ("snippet %s" % doc['module'])
-        print ("%s- name: ${1:task_description}" % prefix)
-        print ("%s  %s:" % (prefix, doc['module']))
+        l.append(("snippet %s" % doc['module']))
+        l.append(("%s- name: ${1:task_description}" % prefix))
+        l.append(("%s  %s:" % (prefix, doc['module'])))
 
         count = 1
         if 'options' in doc:
@@ -39,7 +41,7 @@ def generate(path, args):
                                               doc['options'][opt]['default'])
                     else:
                         value = "${%d}" % (count)
-                    print ("%s    %s: %s" % (prefix, opt, value))
+                    l.append(("%s    %s: %s" % (prefix, opt, value)))
 
             for opt in doc['options']:
                 if 'required' not in doc['options'][opt] or \
@@ -51,10 +53,11 @@ def generate(path, args):
                                               doc['options'][opt]['default'])
                     else:
                         value = "${%d}" % (count)
-                    print ("%s    #%s: %s" % (prefix, opt, value))
+                    l.append(("%s    #%s: %s" % (prefix, opt, value)))
             if args.ultisnips:
-                print ('endsnippet')
-            print ('')
+                l.append('endsnippet')
+            l.append('\n')
+    snippets.append('\n'.join(l))
 
 
 def main():
@@ -72,10 +75,12 @@ def main():
     else:
         print (snipmate_play)
 
+    snippets = []
     for root, _, files in os.walk(args.modpath[0]):
         for name in files:
             if name.endswith('.py'):
-                generate(os.path.join(root, name), args)
+                generate(os.path.join(root, name), args, snippets)
+    print ''.join(sorted(snippets)),
 
 if __name__ == '__main__':
         main()
