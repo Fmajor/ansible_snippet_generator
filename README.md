@@ -11,9 +11,7 @@ A small script to generate snipmate.vim and UltiSnips Ansible snippets.
 ## Run
 
 ```
-source ~/ansible/lib/hacking/env-setup
-
-./snippet_generator.py --ultisnips ~/ansible/lib/ansible/modules > ~/.vim/snippets/UltiSnips/yaml.snippets
+./snippet_generator.py --ultisnips /usr/lib/python3.8/site-packages/ansible > ~/.vim/yaml.snippet
 ```
 
 ## Credits
